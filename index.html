@@ -73,6 +73,24 @@
       text-transform: uppercase; color: var(--muted);
       border: 1px solid var(--line); border-radius: 999px; padding: 3px 10px; margin-bottom: 20px;
     }
+    .dl-count { color: var(--muted); font-size: .85rem; margin-top: 6px; min-height: 1.2em; }
+    .dl-count strong { color: var(--ink); font-weight: 600; }
+    .shots { margin-top: 48px; }
+    .shots h2 {
+      font-family: "IBM Plex Serif", Georgia, serif; font-size: 1.15rem; font-weight: 600;
+      text-align: center; margin: 0 0 20px;
+    }
+    .shot { margin-bottom: 18px; }
+    .shot figcaption { color: var(--muted); font-size: .82rem; text-align: center; margin-top: 8px; }
+    /* Placeholder box. To use a real image, replace the .ph div with:
+       <img class="shot-img" src="shots/today.png" alt="today's note" /> */
+    .ph, .shot-img {
+      display: flex; align-items: center; justify-content: center;
+      width: 100%; aspect-ratio: 16 / 10; border-radius: 12px;
+      background: #f3f2ee; border: 1px dashed #cfccc4;
+      color: var(--muted); font-size: .85rem; text-align: center; padding: 12px;
+    }
+    .shot-img { display: block; object-fit: cover; border-style: solid; border-color: var(--line); }
   </style>
 </head>
 <body>
@@ -95,6 +113,7 @@
         Download for Mac
       </a>
       <p class="req">Requires macOS on Apple Silicon (M1 or newer). It's free while in beta.</p>
+      <p class="dl-count" id="dlCount"></p>
     </div>
 
     <div class="card">
@@ -114,9 +133,46 @@
       </p>
     </div>
 
+    <section class="shots">
+      <h2>A look inside</h2>
+      <figure class="shot">
+        <div class="ph">Screenshot: today's note</div>
+        <figcaption>Write the day in plain Markdown.</figcaption>
+      </figure>
+      <figure class="shot">
+        <div class="ph">Screenshot: the board</div>
+        <figcaption>Tasks and tagged lines gather onto one board.</figcaption>
+      </figure>
+      <figure class="shot">
+        <div class="ph">Screenshot: calendar heatmap</div>
+        <figcaption>See your writing streak at a glance.</figcaption>
+      </figure>
+    </section>
+
     <footer>
       jara beta. Your notes never leave your Mac unless you turn on sync.
     </footer>
   </div>
+
+  <script>
+    // Live download total, summed across all release assets. The releases repo
+    // is public, so this needs no token. Fails quietly if the API is unreachable.
+    (function () {
+      var el = document.getElementById("dlCount");
+      if (!el) return;
+      fetch("https://api.github.com/repos/joshshiman/jara-releases/releases")
+        .then(function (r) { return r.ok ? r.json() : Promise.reject(); })
+        .then(function (releases) {
+          var total = 0;
+          releases.forEach(function (rel) {
+            (rel.assets || []).forEach(function (a) { total += a.download_count || 0; });
+          });
+          if (total > 0) {
+            el.innerHTML = "<strong>" + total.toLocaleString() + "</strong> download" + (total === 1 ? "" : "s") + " so far";
+          }
+        })
+        .catch(function () { /* leave the line empty */ });
+    })();
+  </script>
 </body>
 </html>
