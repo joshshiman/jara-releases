@@ -3,19 +3,23 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>jara: a calm home for your daily notes</title>
-  <meta name="description" content="jara is a local-first daily notes app for macOS. Your notes stay as plain Markdown you own." />
+  <title>jara: an opinionated home for your daily notes</title>
+  <meta name="description" content="jara is an opinionated, local-first daily notes app for macOS. One page a day, plain Markdown you own, and a board that organizes itself." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@500;600&display=swap" rel="stylesheet" />
   <style>
     :root {
       color-scheme: light;
       --bg: #faf9f6;
       --ink: #171717;
       --muted: #6b7280;
+      --faint: #9a978f;
       --line: #e7e5e0;
       --card: #ffffff;
+      --tagbg: #eef1e6;
+      --tagink: #55632f;
+      --check: #3f7d57;
     }
     * { box-sizing: border-box; }
     html, body { margin: 0; }
@@ -26,71 +30,170 @@
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
     }
-    .wrap { max-width: 640px; margin: 0 auto; padding: 72px 24px 56px; }
+    .wrap { max-width: 720px; margin: 0 auto; padding: 72px 24px 56px; }
+
+    /* --- hero --- */
     header { text-align: center; }
-    .logo { height: 72px; width: auto; object-fit: contain; }
+    .logo { height: 68px; width: auto; object-fit: contain; }
+    .badge {
+      display: inline-block; font-size: .7rem; font-weight: 600; letter-spacing: .08em;
+      text-transform: uppercase; color: var(--muted);
+      border: 1px solid var(--line); border-radius: 999px; padding: 3px 11px; margin-bottom: 20px;
+    }
     h1 {
       font-family: "IBM Plex Serif", Georgia, serif;
-      font-weight: 600;
-      font-size: 2rem;
-      line-height: 1.25;
-      margin: 28px 0 10px;
+      font-weight: 600; font-size: 2.3rem; line-height: 1.15;
+      margin: 26px 0 12px; letter-spacing: -0.01em;
     }
-    .lede { color: var(--muted); font-size: 1.05rem; margin: 0 auto; max-width: 30rem; }
-    .cta { text-align: center; margin: 36px 0 12px; }
+    .lede { color: var(--muted); font-size: 1.08rem; margin: 0 auto; max-width: 30rem; }
+    .cta { text-align: center; margin: 34px 0 0; }
     .btn {
       display: inline-flex; align-items: center; gap: 10px;
       background: var(--ink); color: #fff; text-decoration: none;
-      font-weight: 600; font-size: 1rem;
-      padding: 14px 26px; border-radius: 12px;
-      transition: background .15s ease;
+      font-weight: 600; font-size: 1rem; padding: 14px 26px; border-radius: 12px;
+      transition: background .15s ease, transform .15s ease;
     }
-    .btn:hover { background: #333; }
+    .btn:hover { background: #333; transform: translateY(-1px); }
     .btn svg { width: 18px; height: 18px; }
-    .req { color: var(--muted); font-size: .85rem; margin-top: 12px; }
+    .meta { color: var(--faint); font-size: .85rem; margin-top: 12px; }
+    .meta .dl { color: var(--muted); }
+    .meta .dl strong { color: var(--ink); font-weight: 600; }
+
+    /* --- idea intro --- */
+    .eyebrow {
+      text-align: center; font-family: "IBM Plex Mono", monospace;
+      font-size: .72rem; letter-spacing: .18em; text-transform: uppercase;
+      color: var(--faint); margin: 88px 0 14px;
+    }
+    .thesis {
+      font-family: "IBM Plex Serif", Georgia, serif; font-weight: 500;
+      font-size: 1.5rem; line-height: 1.35; text-align: center;
+      max-width: 34rem; margin: 0 auto; letter-spacing: -0.01em;
+    }
+
+    /* --- feature blocks --- */
+    .feature { margin-top: 72px; }
+    .stance {
+      font-family: "IBM Plex Serif", Georgia, serif; font-weight: 600;
+      font-size: 1.5rem; line-height: 1.25; margin: 0 0 8px; letter-spacing: -0.01em;
+    }
+    .say { color: var(--muted); font-size: 1rem; margin: 0 0 22px; max-width: 30rem; }
+
+    /* --- demo shell (shared) --- */
+    .demo {
+      background: var(--card); border: 1px solid var(--line);
+      border-radius: 14px; overflow: hidden;
+      box-shadow: 0 1px 2px rgba(23,23,23,.04), 0 18px 40px -28px rgba(23,23,23,.25);
+    }
+    .chrome {
+      display: flex; align-items: center; gap: 6px;
+      padding: 11px 14px; border-bottom: 1px solid var(--line); background: #fcfbf9;
+    }
+    .chrome i { width: 10px; height: 10px; border-radius: 50%; background: #e2ded6; display: block; }
+    .chrome .name {
+      margin-left: 8px; font-family: "IBM Plex Mono", monospace;
+      font-size: .74rem; color: var(--faint);
+    }
+    .pane { padding: 20px 22px; font-family: "IBM Plex Mono", monospace; font-size: .86rem; }
+
+    /* demo A: typing note */
+    .noteA .line { white-space: pre-wrap; min-height: 1.5em; color: #33312c; }
+    .noteA .h { color: var(--ink); font-weight: 500; }
+    .noteA .box { color: var(--muted); }
+    .noteA .done { color: var(--faint); }
+    .tag { color: var(--tagink); background: var(--tagbg); border-radius: 5px; padding: 0 5px; }
+    .caret {
+      display: inline-block; width: 8px; height: 1.05em; margin-left: 1px;
+      background: var(--ink); vertical-align: -2px; animation: blink 1.05s steps(1) infinite;
+    }
+    @keyframes blink { 0%,50% { opacity: 1; } 50.01%,100% { opacity: 0; } }
+
+    /* demo B: board assembles (signature) */
+    .board { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+    .board .src { padding: 20px 20px; border-right: 1px solid var(--line); }
+    .board .dst { padding: 16px 18px 20px; background: #fcfbf9; }
+    .board .srcline { color: #33312c; margin: 0 0 10px; line-height: 1.5; }
+    .board .srcline.hot { animation: hot 7s ease-in-out infinite; }
+    @keyframes hot {
+      0%, 26% { background: transparent; }
+      30%, 44% { background: #fff6d9; }
+      48%, 100% { background: transparent; }
+    }
+    .grouphead {
+      font-size: .72rem; letter-spacing: .04em; color: var(--faint);
+      margin: 2px 0 10px;
+    }
+    .card-item {
+      background: #fff; border: 1px solid var(--line); border-radius: 8px;
+      padding: 8px 10px; margin-bottom: 8px; color: #33312c; font-size: .8rem;
+      display: flex; gap: 7px; align-items: flex-start;
+      opacity: 0; transform: translateY(6px);
+      animation: rise 7s ease-in-out infinite;
+    }
+    .card-item .ck { color: var(--check); flex: none; }
+    .card-item:nth-child(2) { animation-delay: 0s; }
+    .card-item:nth-child(3) { animation-delay: .5s; }
+    .card-item:nth-child(4) { animation-delay: 1s; }
+    @keyframes rise {
+      0% { opacity: 0; transform: translateY(6px); }
+      12%, 82% { opacity: 1; transform: translateY(0); }
+      96%, 100% { opacity: 0; transform: translateY(6px); }
+    }
+
+    /* demo C: calendar heatmap */
+    .heat { display: grid; grid-template-columns: repeat(7, 1fr); gap: 7px; }
+    .heat span {
+      aspect-ratio: 1 / 1; border-radius: 4px; background: #efeee9;
+      animation: fillcell 6s ease-in-out infinite;
+    }
+    .heat span.l1 { --c: #dce6cf; }
+    .heat span.l2 { --c: #b6cd97; }
+    .heat span.l3 { --c: #8fae63; }
+    .heat span.l0 { --c: #efeee9; }
+    @keyframes fillcell {
+      0% { background: #efeee9; }
+      18%, 82% { background: var(--c); }
+      98%, 100% { background: #efeee9; }
+    }
+
+    /* --- beliefs --- */
+    .beliefs { margin-top: 96px; border-top: 1px solid var(--line); padding-top: 40px; }
+    .beliefs h2 {
+      font-family: "IBM Plex Serif", Georgia, serif; font-weight: 600;
+      font-size: 1.2rem; text-align: center; margin: 0 0 26px;
+    }
+    .tenet { display: flex; gap: 12px; align-items: baseline; margin: 0 auto 16px; max-width: 34rem; }
+    .tenet .mk { font-family: "IBM Plex Mono", monospace; color: var(--tagink); font-size: .8rem; flex: none; }
+    .tenet p { margin: 0; font-size: .98rem; color: #33312c; }
+
+    /* --- install card --- */
     .card {
       background: var(--card); border: 1px solid var(--line);
-      border-radius: 14px; padding: 22px 24px; margin-top: 40px;
+      border-radius: 14px; padding: 22px 24px; margin-top: 56px;
     }
     .card h2 { font-family: "IBM Plex Serif", Georgia, serif; font-size: 1.15rem; font-weight: 600; margin: 0 0 6px; }
     .card p.sub { color: var(--muted); font-size: .92rem; margin: 0 0 16px; }
     ol { margin: 0; padding-left: 20px; }
     ol li { margin-bottom: 10px; }
-    kbd {
-      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-      font-size: .82em; background: #f3f4f6; border: 1px solid var(--line);
-      border-radius: 5px; padding: 1px 6px;
-    }
     code {
-      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-      font-size: .85em; background: #f3f4f6; border-radius: 5px; padding: 2px 6px;
-      word-break: break-all;
+      font-family: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+      font-size: .85em; background: #f3f2ee; border-radius: 5px; padding: 2px 6px; word-break: break-all;
     }
     .note { color: var(--muted); font-size: .88rem; margin-top: 14px; }
-    footer { text-align: center; color: var(--muted); font-size: .82rem; margin-top: 48px; }
-    .badge {
-      display: inline-block; font-size: .72rem; font-weight: 600; letter-spacing: .04em;
-      text-transform: uppercase; color: var(--muted);
-      border: 1px solid var(--line); border-radius: 999px; padding: 3px 10px; margin-bottom: 20px;
+    footer { text-align: center; color: var(--faint); font-size: .82rem; margin-top: 52px; }
+
+    @media (max-width: 560px) {
+      h1 { font-size: 1.9rem; }
+      .board { grid-template-columns: 1fr; }
+      .board .src { border-right: none; border-bottom: 1px solid var(--line); }
     }
-    .dl-count { color: var(--muted); font-size: .85rem; margin-top: 6px; min-height: 1.2em; }
-    .dl-count strong { color: var(--ink); font-weight: 600; }
-    .shots { margin-top: 48px; }
-    .shots h2 {
-      font-family: "IBM Plex Serif", Georgia, serif; font-size: 1.15rem; font-weight: 600;
-      text-align: center; margin: 0 0 20px;
+    @media (prefers-reduced-motion: reduce) {
+      .caret { animation: none; }
+      .board .srcline.hot { animation: none; background: #fff6d9; }
+      .card-item { animation: none; opacity: 1; transform: none; }
+      .heat span { animation: none; background: var(--c); }
+      .btn { transition: none; }
     }
-    .shot { margin-bottom: 18px; }
-    .shot figcaption { color: var(--muted); font-size: .82rem; text-align: center; margin-top: 8px; }
-    /* Placeholder box. To use a real image, replace the .ph div with:
-       <img class="shot-img" src="shots/today.png" alt="today's note" /> */
-    .ph, .shot-img {
-      display: flex; align-items: center; justify-content: center;
-      width: 100%; aspect-ratio: 16 / 10; border-radius: 12px;
-      background: #f3f2ee; border: 1px dashed #cfccc4;
-      color: var(--muted); font-size: .85rem; text-align: center; padding: 12px;
-    }
-    .shot-img { display: block; object-fit: cover; border-style: solid; border-color: var(--line); }
   </style>
 </head>
 <body>
@@ -98,10 +201,10 @@
     <header>
       <span class="badge">Beta</span><br />
       <img class="logo" src="logo.png" alt="jara" />
-      <h1>A calm home for your daily notes</h1>
+      <h1>One page a day. On purpose.</h1>
       <p class="lede">
-        jara is a local-first notes app for macOS. One page a day, plain Markdown, stored in a folder
-        you own. Optional GitHub sync keeps it backed up and in step across your Macs.
+        jara is an opinionated, local-first notes app for macOS. It makes a few strong choices so you
+        can stop managing notes and just write them.
       </p>
     </header>
 
@@ -112,10 +215,87 @@
         </svg>
         Download for Mac
       </a>
-      <p class="req">Requires macOS on Apple Silicon (M1 or newer). It's free while in beta.</p>
-      <p class="dl-count" id="dlCount"></p>
+      <p class="meta">
+        Apple Silicon (M1 or newer). Free while in beta.
+        <span class="dl" id="dlCount"></span>
+      </p>
     </div>
 
+    <p class="eyebrow">The idea</p>
+    <p class="thesis">
+      Most notes apps hand you endless places to put things. jara gives you one, and does the
+      organizing for you.
+    </p>
+
+    <!-- FEATURE 1: daily note -->
+    <section class="feature">
+      <h3 class="stance">Open it, and today is already here.</h3>
+      <p class="say">
+        No "new note" button, no folders, no deciding where anything goes. Each day is one page.
+        Yesterday is a single click back.
+      </p>
+      <div class="demo">
+        <div class="chrome"><i></i><i></i><i></i><span class="name">2026-07-31.md</span></div>
+        <div class="pane noteA" id="demoA" aria-hidden="true">
+          <div class="line" data-final="# Thursday, July 31"></div>
+          <div class="line" data-final="- [ ] Ship the jara beta @work"></div>
+          <div class="line" data-final="- [x] Morning pages"></div>
+          <div class="line" data-final="Coffee with Sam. Wants an invite. @ideas"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FEATURE 2: the board (signature) -->
+    <section class="feature">
+      <h3 class="stance">You write. The board organizes.</h3>
+      <p class="say">
+        Tag a line with an @label or start a checkbox. jara collects those lines onto one board so
+        your tasks and threads stop scattering across days. You never file a thing.
+      </p>
+      <div class="demo">
+        <div class="chrome"><i></i><i></i><i></i><span class="name">board</span></div>
+        <div class="pane board" aria-hidden="true">
+          <div class="src">
+            <p class="srcline hot">- [ ] Ship the beta <span class="tag">@work</span></p>
+            <p class="srcline">Slept badly.</p>
+            <p class="srcline hot">Call the accountant <span class="tag">@work</span></p>
+            <p class="srcline hot">- [ ] Refill coffee <span class="tag">@work</span></p>
+          </div>
+          <div class="dst">
+            <p class="grouphead"><span class="tag">@work</span></p>
+            <div class="card-item"><span class="ck">&#9744;</span><span>Ship the beta</span></div>
+            <div class="card-item"><span>Call the accountant</span></div>
+            <div class="card-item"><span class="ck">&#9744;</span><span>Refill coffee</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FEATURE 3: heatmap -->
+    <section class="feature">
+      <h3 class="stance">Your whole year, at a glance.</h3>
+      <p class="say">
+        A quiet calendar shows the days you wrote. Watch a streak build, and jump to any day without
+        digging through a list.
+      </p>
+      <div class="demo">
+        <div class="chrome"><i></i><i></i><i></i><span class="name">calendar</span></div>
+        <div class="pane" aria-hidden="true">
+          <div class="heat" id="heat"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BELIEFS -->
+    <section class="beliefs">
+      <h2>What jara believes</h2>
+      <div class="tenet"><span class="mk">01</span><p>Your notes are plain Markdown files, in a folder you choose. Open them anywhere, keep them for decades.</p></div>
+      <div class="tenet"><span class="mk">02</span><p>Local first. Nothing leaves your Mac unless you turn on sync, and then only to a repo you own.</p></div>
+      <div class="tenet"><span class="mk">03</span><p>No account, no subscription, no cloud lock-in. jara can disappear tomorrow and your notes stay.</p></div>
+      <div class="tenet"><span class="mk">04</span><p>Calm by default. One page, no feed, no notifications, nothing asking for your attention.</p></div>
+    </section>
+
+    <!-- INSTALL -->
     <div class="card">
       <h2>First time opening jara</h2>
       <p class="sub">
@@ -133,30 +313,16 @@
       </p>
     </div>
 
-    <section class="shots">
-      <h2>A look inside</h2>
-      <figure class="shot">
-        <div class="ph">Screenshot: today's note</div>
-        <figcaption>Write the day in plain Markdown.</figcaption>
-      </figure>
-      <figure class="shot">
-        <div class="ph">Screenshot: the board</div>
-        <figcaption>Tasks and tagged lines gather onto one board.</figcaption>
-      </figure>
-      <figure class="shot">
-        <div class="ph">Screenshot: calendar heatmap</div>
-        <figcaption>See your writing streak at a glance.</figcaption>
-      </figure>
-    </section>
-
     <footer>
       jara beta. Your notes never leave your Mac unless you turn on sync.
     </footer>
   </div>
 
   <script>
-    // Live download total, summed across all release assets. The releases repo
-    // is public, so this needs no token. Fails quietly if the API is unreachable.
+    var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    /* Live download total across all release assets. Public repo, no token.
+       Fails quietly if the API is unreachable. */
     (function () {
       var el = document.getElementById("dlCount");
       if (!el) return;
@@ -168,10 +334,74 @@
             (rel.assets || []).forEach(function (a) { total += a.download_count || 0; });
           });
           if (total > 0) {
-            el.innerHTML = "<strong>" + total.toLocaleString() + "</strong> download" + (total === 1 ? "" : "s") + " so far";
+            el.innerHTML = "&middot; <strong>" + total.toLocaleString() + "</strong> download" + (total === 1 ? "" : "s");
           }
         })
-        .catch(function () { /* leave the line empty */ });
+        .catch(function () {});
+    })();
+
+    /* Build the heatmap cells with a gentle spread of intensities. */
+    (function () {
+      var heat = document.getElementById("heat");
+      if (!heat) return;
+      var levels = [0,1,0,2,1,0,1, 1,2,3,2,1,0,2, 0,1,2,3,2,3,1, 2,3,2,1,2,1,0, 1,0,1,2,3,2,1];
+      for (var i = 0; i < levels.length; i++) {
+        var s = document.createElement("span");
+        s.className = "l" + levels[i];
+        s.style.animationDelay = (i * 0.045).toFixed(2) + "s";
+        heat.appendChild(s);
+      }
+    })();
+
+    /* Demo A: type the note out line by line, then hold and loop. */
+    (function () {
+      var pane = document.getElementById("demoA");
+      if (!pane) return;
+      var lines = Array.prototype.slice.call(pane.querySelectorAll(".line"));
+
+      function render(el, text) {
+        // Light syntax coloring for the mock editor.
+        var html = text
+          .replace(/@(\w+)/g, '<span class="tag">@$1</span>')
+          .replace(/^# (.*)$/, '<span class="h"># $1</span>')
+          .replace(/^- \[ \]/, '<span class="box">- [ ]</span>')
+          .replace(/^- \[x\]/, '<span class="done">- [x]</span>');
+        el.innerHTML = html;
+      }
+
+      // Show the finished note by default, so the pane is never blank
+      // (e.g. before it scrolls into view, or with reduced motion).
+      lines.forEach(function (el) { render(el, el.dataset.final); });
+      if (reduce) return;
+
+      var li = 0, ci = 0, caret = document.createElement("span");
+      caret.className = "caret";
+
+      function step() {
+        if (li >= lines.length) {
+          setTimeout(reset, 2600);
+          return;
+        }
+        var el = lines[li], full = el.dataset.final;
+        if (ci === 0 && caret.parentNode) caret.parentNode.removeChild(caret);
+        ci++;
+        render(el, full.slice(0, ci));
+        el.appendChild(caret);
+        if (ci >= full.length) { li++; ci = 0; setTimeout(step, 420); }
+        else { setTimeout(step, 34 + Math.random() * 46); }
+      }
+      function reset() {
+        lines.forEach(function (el) { el.innerHTML = ""; });
+        li = 0; ci = 0; step();
+      }
+      // Start when scrolled into view.
+      var started = false;
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting && !started) { started = true; step(); io.disconnect(); }
+        });
+      }, { threshold: 0.4 });
+      io.observe(pane);
     })();
   </script>
 </body>
