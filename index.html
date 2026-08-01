@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>jara: a calm home for your daily notes</title>
+  <meta name="description" content="jara is a local-first daily notes app for macOS. Your notes stay as plain Markdown you own." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #faf9f6;
+      --ink: #171717;
+      --muted: #6b7280;
+      --line: #e7e5e0;
+      --card: #ffffff;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; }
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    .wrap { max-width: 640px; margin: 0 auto; padding: 72px 24px 56px; }
+    header { text-align: center; }
+    .logo { height: 72px; width: auto; object-fit: contain; }
+    h1 {
+      font-family: "IBM Plex Serif", Georgia, serif;
+      font-weight: 600;
+      font-size: 2rem;
+      line-height: 1.25;
+      margin: 28px 0 10px;
+    }
+    .lede { color: var(--muted); font-size: 1.05rem; margin: 0 auto; max-width: 30rem; }
+    .cta { text-align: center; margin: 36px 0 12px; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: var(--ink); color: #fff; text-decoration: none;
+      font-weight: 600; font-size: 1rem;
+      padding: 14px 26px; border-radius: 12px;
+      transition: background .15s ease;
+    }
+    .btn:hover { background: #333; }
+    .btn svg { width: 18px; height: 18px; }
+    .req { color: var(--muted); font-size: .85rem; margin-top: 12px; }
+    .card {
+      background: var(--card); border: 1px solid var(--line);
+      border-radius: 14px; padding: 22px 24px; margin-top: 40px;
+    }
+    .card h2 { font-family: "IBM Plex Serif", Georgia, serif; font-size: 1.15rem; font-weight: 600; margin: 0 0 6px; }
+    .card p.sub { color: var(--muted); font-size: .92rem; margin: 0 0 16px; }
+    ol { margin: 0; padding-left: 20px; }
+    ol li { margin-bottom: 10px; }
+    kbd {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: .82em; background: #f3f4f6; border: 1px solid var(--line);
+      border-radius: 5px; padding: 1px 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: .85em; background: #f3f4f6; border-radius: 5px; padding: 2px 6px;
+      word-break: break-all;
+    }
+    .note { color: var(--muted); font-size: .88rem; margin-top: 14px; }
+    footer { text-align: center; color: var(--muted); font-size: .82rem; margin-top: 48px; }
+    .badge {
+      display: inline-block; font-size: .72rem; font-weight: 600; letter-spacing: .04em;
+      text-transform: uppercase; color: var(--muted);
+      border: 1px solid var(--line); border-radius: 999px; padding: 3px 10px; margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <span class="badge">Beta</span><br />
+      <img class="logo" src="logo.png" alt="jara" />
+      <h1>A calm home for your daily notes</h1>
+      <p class="lede">
+        jara is a local-first notes app for macOS. One page a day, plain Markdown, stored in a folder
+        you own. Optional GitHub sync keeps it backed up and in step across your Macs.
+      </p>
+    </header>
+
+    <div class="cta">
+      <a class="btn" href="https://github.com/joshshiman/jara-releases/releases/latest/download/jara-mac-apple-silicon.dmg">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 3v12" /><path d="m7 10 5 5 5-5" /><path d="M5 21h14" />
+        </svg>
+        Download for Mac
+      </a>
+      <p class="req">Requires macOS on Apple Silicon (M1 or newer). It's free while in beta.</p>
+    </div>
+
+    <div class="card">
+      <h2>First time opening jara</h2>
+      <p class="sub">
+        The beta isn't signed by Apple yet, so macOS asks before opening it the first time. This is
+        a one-time step.
+      </p>
+      <ol>
+        <li>Open the downloaded <code>.dmg</code> and drag <strong>jara</strong> into Applications.</li>
+        <li>In Applications, <strong>right-click jara</strong> and choose <strong>Open</strong>. Don't double-click it the first time.</li>
+        <li>Click <strong>Open</strong> in the dialog. macOS remembers your choice, so it opens normally from then on.</li>
+      </ol>
+      <p class="note">
+        If macOS says the app is "damaged," that's just the download flag. Open Terminal and run
+        <code>xattr -cr /Applications/jara.app</code>, then open it again.
+      </p>
+    </div>
+
+    <footer>
+      jara beta. Your notes never leave your Mac unless you turn on sync.
+    </footer>
+  </div>
+</body>
+</html>
